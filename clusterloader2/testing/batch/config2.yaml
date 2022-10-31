@@ -30,7 +30,15 @@ steps:
     Params:
       action: start
       labelSelector: group = test-pod
-      threshold: 20s    
+      threshold: 20s  
+  - Identifier: WaitForRunningLatencyJobPods
+    Method: WaitForControlledPodsRunning
+    Params:
+      action: start
+      apiVersion: batch/v1
+      kind: Job
+      labelSelector: group = test-job
+      operationTimeout: 2m      
   - Identifier: WaitForFinishedJobs
     Method: WaitForFinishedJobs
     Params:
@@ -86,6 +94,10 @@ steps:
         LocalQueue: "{{$LOCAL_QUEUE}}-0"           
 - name: Wait for {{$MODE}} jobs to finish
   measurements:
+  - Identifier: WaitForRunningLatencyJobPods
+    Method: WaitForControlledPodsRunning
+    Params:
+      action: gather    
   - Identifier: WaitForFinishedJobs
     Method: WaitForFinishedJobs
     Params:
